@@ -1,15 +1,17 @@
 # 🛍️ E-Commerce Analytics Pipeline on Google Cloud Platform
 
 ## 📘 Overview
-This project demonstrates an **end-to-end ETL + Analytics pipeline** built entirely on **Google Cloud Platform (GCP)**.
+This project demonstrates an **end-to-end ETL + Analytics pipeline** built entirely on **Google Cloud Platform (GCP)**.  
 
 It extracts raw e-commerce product data, transforms and loads it into **BigQuery**, and visualizes insights using **Looker Studio**.  
-All steps are automated and scalable — a real-world example of a modern data engineering pipeline.
+All steps are automated, scalable, and represent a real-world **data engineering workflow**.
 
 ---
 
 ## ☁️ Architecture
-FakeStore API → Cloud Storage (Raw Data) → Data Fusion (ETL) → BigQuery (Data Warehouse) → Looker Studio (Visualization)
+
+**Data Flow:**  
+`FakeStore API → Cloud Storage (Raw Data) → Cloud Data Fusion (ETL) → BigQuery (Data Warehouse) → Looker Studio (Visualization)`
 
 ---
 
@@ -18,29 +20,29 @@ FakeStore API → Cloud Storage (Raw Data) → Data Fusion (ETL) → BigQuery (D
 ### 🪣 Google Cloud Storage (GCS)
 - **Bucket Name:** `ecomm-raw-data`
 - **Folder:** `/raw/`
-- Stores raw CSV files fetched from the FakeStore API.
-- Example file: `products_20251019_183154.csv`
+- **Purpose:** Stores raw CSV files fetched from the FakeStore API.
+- **Example file:** `products_20251019_183154.csv`
 
-**Screenshot:**  
-![Cloud Storage](images/cloud_storage_bucket.png)
+📸 *Screenshot:*  
+`images/cloud_storage_bucket.png`
 
 ---
 
 ### ⚙️ Cloud Data Fusion (ETL)
 - **Instance ID:** `ecomm-fusion`
 - **Region:** `us-central1`
-- **Edition:** Basic
+- **Edition:** `Basic`
 
 **Purpose:**  
 Orchestrates the ETL pipeline — reads from Cloud Storage, transforms the data, and writes to BigQuery.
 
-#### Pipeline Steps
+**Pipeline Steps**
 1. **GCS Source:** Reads CSV from `gs://ecomm-raw-data/raw/`
 2. **Wrangler Transform:** Cleans and structures fields (`id`, `title`, `price`, etc.)
 3. **BigQuery Sink:** Writes transformed data into `ecommerce_dataset.products`
 
-**Screenshots:**  
-![Data Fusion Pipeline](images/datafusion_pipeline.png)  
+📸 *Screenshot:*  
+`images/datafusion_pipeline.png`
 
 ---
 
@@ -48,9 +50,10 @@ Orchestrates the ETL pipeline — reads from Cloud Storage, transforms the data,
 - **Dataset:** `ecommerce_dataset`
 - **Table:** `products`
 
-#### Schema
+**Schema**
+
 | Field | Type | Description |
-|--------|------|-------------|
+|-------|------|-------------|
 | id | INTEGER | Product ID |
 | title | STRING | Product Name |
 | description | STRING | Product Description |
@@ -60,7 +63,7 @@ Orchestrates the ETL pipeline — reads from Cloud Storage, transforms the data,
 | rating_count | INTEGER | Number of Ratings |
 | image | STRING | Product Image URL |
 
-#### Example Aggregation Query
+**Example Aggregation Query**
 ```sql
 SELECT
   category,
@@ -72,6 +75,7 @@ SELECT
 FROM `lucid-destiny-475616-t5.ecommerce_dataset.products`
 GROUP BY category
 ORDER BY avg_rating DESC;
+
 🎯 Looker Studio (Visualization)
 Dashboard Name
 
