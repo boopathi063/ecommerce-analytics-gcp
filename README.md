@@ -63,7 +63,8 @@ Orchestrates the ETL pipeline — reads from Cloud Storage, transforms the data,
 | rating_count | INTEGER | Number of Ratings |
 | image | STRING | Product Image URL |
 
-**Example Aggregation Query**
+## 🧮 Example Aggregation Query
+
 ```sql
 SELECT
   category,
@@ -76,113 +77,204 @@ FROM `lucid-destiny-475616-t5.ecommerce_dataset.products`
 GROUP BY category
 ORDER BY avg_rating DESC;
 
-🎯 Looker Studio (Visualization)
-Dashboard Name
 
-E-Commerce Product Analytics
+## 🎯 Looker Studio (Visualization)
 
-Visuals Included
+**Dashboard Name:**  
+`E-Commerce Product Analytics`
 
-Scorecards (KPIs)
+### 📊 Visuals Included
 
-Total Products
+#### 🧮 Scorecards (KPIs)
+Show key performance indicators at the top of your dashboard:
+- **Total Products** — Count of all items available  
+- **Average Price** — Mean product price across categories  
+- **Average Rating** — Average of customer ratings  
+- **Total Ratings Count** — Sum of all rating counts  
 
-Price
+#### 🥧 Pie Chart: Product Distribution
+Displays the percentage of products per category (e.g., Men's Clothing, Electronics, etc.).
 
-Average Rating
+#### 📈 Bar Chart: Average Price per Category
+Compares the average price across product categories — useful for identifying premium vs budget categories.
 
-Total Ratings Count
+#### 💲 Bar Chart: Price Range Distribution
+Uses the *Price Range* calculated field to show how many products fall into Low, Medium, or High price ranges.
 
-Pie Chart: Product distribution
+#### 🎯 Scatter Chart: Price vs Rating
+Visualizes correlation between product **price** and **average rating**, helping identify best-value items.
 
-Bar Chart: Average price
+#### 🧾 Detailed Table: Product Information
+Tabular view showing each product’s:
+- **Title**
+- **Price**
+- **Category**
+- **Average Rating**
+- **Rating Count**
 
-Bar Chart: Price Distribution
+## 🎯 Looker Studio (Visualization)
 
-Scatter Chart:Price vs Rating
+**Dashboard Name:**  
+`E-Commerce Product Analytics`
 
-Table with Product details (Title, Price, Rating )
+![Looker Studio Dashboard](images/looker_studio_dashboard.png)
 
-Calculated Fields:
-Price Range:
+### 📊 Visuals Included
+
+#### 🧮 Scorecards (KPIs)
+Display key performance indicators at the top of your dashboard:
+- **Total Products** — Count of all available items  
+- **Average Price** — Mean product price across categories  
+- **Average Rating** — Overall customer satisfaction level  
+- **Total Ratings Count** — Sum of all customer reviews  
+
+#### 🥧 Pie Chart: Product Distribution
+Shows product distribution across categories such as *Men’s Clothing*, *Women’s Clothing*, *Electronics*, and *Jewelry*.
+
+#### 📈 Bar Chart: Average Price per Category
+Compares average product prices per category to identify premium vs budget segments.
+
+#### 💲 Bar Chart: Price Range Distribution
+Uses the **Price Range** calculated field to categorize products as:
+```sql
 CASE
   WHEN price < 50 THEN "Low (<$50)"
-  WHEN price BETWEEN 50 AND 200 THEN "Medium ($50-$200)"
+  WHEN price BETWEEN 50 AND 200 THEN "Medium ($50–$200)"
   ELSE "High (>$200)"
 END
-
-Rating Bucket:
+---
+###⭐ Rating Bucket
+```
 CASE
   WHEN rating_rate < 2 THEN "Poor (<2)"
   WHEN rating_rate BETWEEN 2 AND 4 THEN "Average (2–4)"
   ELSE "Excellent (4–5)"
 END
-50    
 
-🧱 Project Setup Steps
-1️⃣ Create a GCP Project
+---
 
-Enable APIs: Cloud Storage, Data Fusion, BigQuery, Looker Studio
+## 🧱 Project Setup Steps
 
-Configure IAM roles (Editor, Data Fusion Runner, BigQuery Admin)
+### 1️⃣ Create a GCP Project
+1. Go to the [Google Cloud Console](https://console.cloud.google.com/).
+2. Create a new project (e.g., `ecommerce-analytics-project`).
+3. Enable the following APIs:
+   - **Cloud Storage**
+   - **Cloud Data Fusion**
+   - **BigQuery**
+   - **Looker Studio**
+4. Assign IAM roles:
+   - `Editor`
+   - `Cloud Data Fusion Runner`
+   - `BigQuery Admin`
 
-2️⃣ Extract Data
+---
 
-Use Python or Cloud Function to fetch product data from FakeStore API.
+### 2️⃣ Extract Data
 
-Example:
+You can use Python or a Cloud Function to extract product data from the **FakeStore API**.
+
+#### Example Python Script
+
+```python
 import requests
 import pandas as pd
 
+# Fetch data from FakeStore API
 data = requests.get("https://fakestoreapi.com/products").json()
+
+# Convert to DataFrame
 df = pd.DataFrame(data)
+
+# Save as CSV
 df.to_csv("products.csv", index=False)
 
-3️⃣ Set up Data Fusion
+print("✅ products.csv file created successfully!")
 
-Create instance ecomm-fusion
+## 3️⃣ Set Up Cloud Data Fusion
 
-Build pipeline (GCS → Wrangler → BigQuery)
+1. **Create an Instance**
+   - Instance Name: `ecomm-fusion`
 
-Run pipeline to load data into BigQuery
+2. **Build a Pipeline**
+   - **Source:** GCS (read `products.csv`)
+   - **Transform:** Wrangler (clean and format columns)
+   - **Sink:** BigQuery table (`ecommerce_dataset.products`)
 
-4️⃣ Create Dataset & Table in BigQueryDataset: ecommerce_dataset
-Table: products
+3. **Run the Pipeline**
+   - Execute the pipeline to load data into BigQuery.
 
-5️⃣ Build Looker Studio Dashboard
+---
 
-Connect BigQuery table
+## 4️⃣ Create Dataset & Table in BigQuery
 
-Add charts & filters using fields: category, price, rating_rate, rating_count, title
+- **Dataset:** `ecommerce_dataset`  
+- **Table:** `products`
 
-Apply calculated fields (Price Range, Rating Bucket)
+💡 *The schema will be automatically generated when the Data Fusion pipeline runs successfully.*
 
-📊 Example Summary Table
-Category	Total Products	Avg Price	Avg Rating	Total Ratings	Total Value
-Men's Clothing	4	51.06	3.7	2618	408.46
-Women's Clothing	6	26.29	3.68	3350	315.44
-Electronics	6	332.5	3.48	3564	3989.98
-Jewelry	4	221.0	3.35	1940	1767.96
-📁 Folder Structure
+---
+
+## 5️⃣ Build Looker Studio Dashboard
+
+1. **Connect Looker Studio** to the BigQuery table `ecommerce_dataset.products`.
+
+2. **Add Charts and Filters** using:
+   - `category`
+   - `price`
+   - `rating_rate`
+   - `rating_count`
+   - `title`
+
+3. **Apply Calculated Fields**
+   - **Price Range**
+   - **Rating Bucket**
+## 📊 Example Summary Table
+
+Below is a sample aggregated summary of e-commerce product data analyzed in BigQuery and visualized in Looker Studio.
+
+| Category          | Total Products | Avg Price | Avg Rating | Total Ratings | Total Value |
+|-------------------|----------------|------------|-------------|----------------|--------------|
+| Men's Clothing    | 4              | 51.06      | 3.70        | 2618           | 408.46       |
+| Women's Clothing  | 6              | 26.29      | 3.68        | 3350           | 315.44       |
+| Electronics       | 6              | 332.50     | 3.48        | 3564           | 3989.98      |
+| Jewelry           | 4              | 221.00     | 3.35        | 1940           | 1767.96      |
+
+---
+
+✅ **Insights:**
+- **Men’s & Women’s Clothing** dominate in count but have lower average prices.  
+- **Electronics** contribute the highest **total value** despite fewer products.  
+- **Jewelry** maintains a **mid-range price** but fewer ratings overall.
+
+---
+
+## 📁 Folder Structure
+
+The project is organized as follows:
+
 ecommerce-analytics-gcp/
 ├── src/
-│   └── extract_fakestore.py
+│ └── extract_fakestore.py
 ├── data/
-│   └── products_*.csv
+│ └── products_*.csv
 ├── images/
-│   ├── cloud_storage_bucket.png
-│   ├── datafusion_pipeline.png
-│   ├── wrangler_preview.png
-│   ├── bigquery_results.png
-│   └── looker_studio_dashboard.png
+│ ├── cloud_storage_bucket.png
+│ ├── datafusion_pipeline.png
+│ ├── wrangler_preview.png
+│ ├── bigquery_results.png
+│ └── looker_studio_dashboard.png
 └── README.md
-🚀 Results
 
-✅ Automated ETL using Cloud Data Fusion
-✅ Centralized analytics in BigQuery
-✅ Interactive insights in Looker Studio
-✅ Fully serverless and scalable GCP architecture
-👨‍💻 Author
+---
 
-Boopathi Raja Mahalingam
-📧 mboopathi063@gmail.com
+## 🚀 Results
+
+✅ **Automated ETL** using Cloud Data Fusion  
+✅ **Centralized analytics** in BigQuery  
+✅ **Interactive insights** in Looker Studio  
+✅ **Fully serverless and scalable** GCP architecture
+## 👨‍💻 Author
+
+**Boopathi Raja Mahalingam**  
+📧 [mboopathi063@gmail.com](mailto:mboopathi063@gmail.com)
