@@ -144,13 +144,13 @@ CASE
 END
 ---
 ###⭐ Rating Bucket
-```
+```sql
 CASE
   WHEN rating_rate < 2 THEN "Poor (<2)"
   WHEN rating_rate BETWEEN 2 AND 4 THEN "Average (2–4)"
   ELSE "Excellent (4–5)"
 END
-
+---
 ---
 
 ## 🧱 Project Setup Steps
