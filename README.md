@@ -24,7 +24,7 @@ All steps are automated, scalable, and represent a real-world **data engineering
 - **Example file:** `products_20251019_183154.csv`
 
 📸 *Screenshot:*  
-`images/cloud_storage_bucket.png`
+![Cloud Storage](images/cloud_storage_bucket.png)
 
 ---
 
@@ -42,7 +42,7 @@ Orchestrates the ETL pipeline — reads from Cloud Storage, transforms the data,
 3. **BigQuery Sink:** Writes transformed data into `ecommerce_dataset.products`
 
 📸 *Screenshot:*  
-`images/datafusion_pipeline.png`
+![Data Fusion Pipeline](images/datafusion_pipeline.png)  
 
 ---
 
@@ -117,7 +117,7 @@ Tabular view showing each product’s:
 **Dashboard Name:**  
 `E-Commerce Product Analytics`
 
-![Looker Studio Dashboard](images/looker_studio_dashboard.png)
+![Looker Studio Dashboard](images\looker_studio_dashboard.png)
 
 ### 📊 Visuals Included
 
